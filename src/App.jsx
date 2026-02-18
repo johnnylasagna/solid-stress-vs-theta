@@ -4,6 +4,7 @@ import StressGraph from './components/StressGraph';
 import ParameterSlider from './components/ParameterSlider';
 import ThetaRangeControl from './components/ThetaRangeControl';
 import BodyOrientation from './components/BodyOrientation';
+import MohrsCircle from './components/MohrsCircle';
 
 const INITIAL = {
   sigmaX: { value: 80,  min: -200, max: 200, step: 1 },
@@ -11,7 +12,13 @@ const INITIAL = {
   tauXY:  { value: 50,  min: -200, max: 200, step: 1 },
 };
 
-function DEG2RAD(d) { return d * Math.PI / 180; }
+const PRESETS = [
+  { name: 'Default',     sx: 80,  sy: -40, txy: 50  },
+  { name: 'Uniaxial',    sx: 100, sy: 0,   txy: 0   },
+  { name: 'Biaxial',     sx: 80,  sy: 40,  txy: 0   },
+  { name: 'Pure Shear',  sx: 0,   sy: 0,   txy: 60  },
+  { name: 'Equal Biax',  sx: 60,  sy: 60,  txy: 0   },
+];
 
 function getPrincipalAngles(sigmaX, sigmaY, tauXY) {
   const diff = sigmaX - sigmaY;
@@ -29,9 +36,19 @@ export default function App() {
   const [thetaMin, setThetaMin] = useState(0);
   const [thetaMax, setThetaMax] = useState(180);
   const [theta, setTheta] = useState(0);
+  const [activeTab, setActiveTab] = useState('mohr'); // 'stress' | 'mohr'
 
   const update = useCallback((key, patch) => {
     setParams(prev => ({ ...prev, [key]: { ...prev[key], ...patch } }));
+  }, []);
+
+  const applyPreset = useCallback((p) => {
+    setParams({
+      sigmaX: { ...INITIAL.sigmaX, value: p.sx },
+      sigmaY: { ...INITIAL.sigmaY, value: p.sy },
+      tauXY:  { ...INITIAL.tauXY,  value: p.txy },
+    });
+    setTheta(0);
   }, []);
 
   const { sigmaX, sigmaY, tauXY } = params;
@@ -49,6 +66,21 @@ export default function App() {
           <span className="header-tag">MECH</span>
           <h1 className="header-title">Stress Transformation</h1>
         </div>
+        {/* ── TABS ── */}
+        <div className="header-tabs">
+          <button
+            className={`tab-btn${activeTab === 'stress' ? ' tab-btn--active' : ''}`}
+            onClick={() => setActiveTab('stress')}
+          >
+            σ vs θ Graph
+          </button>
+          <button
+            className={`tab-btn${activeTab === 'mohr' ? ' tab-btn--active' : ''}`}
+            onClick={() => setActiveTab('mohr')}
+          >
+            Mohr's Circle
+          </button>
+        </div>
         <div className="header-equations">
           <span className="eq-chip">
             σ<sub>x′</sub> = <span className="eq-frac">(σ<sub>x</sub>+σ<sub>y</sub>)/2</span>
@@ -62,45 +94,83 @@ export default function App() {
 
       {/* ── MAIN LAYOUT ── */}
       <div className="app-body">
-        {/* ── GRAPH ── */}
-        <div className="graph-panel">
+
+        {/* ── GRAPH PANEL (tab: stress) ── */}
+        <div className={`graph-panel${activeTab !== 'stress' ? ' tab-hidden' : ''}`}>
           <div className="graph-row">
-          <BodyOrientation
-            sigmaX={sigmaX.value}
-            sigmaY={sigmaY.value}
-            tauXY={tauXY.value}
-            theta={theta}
-            onThetaChange={setTheta}
-          />
-          <div className="graph-col">
-          <div className="panel-topbar">
-            <span className="panel-label">STRESS  vs  ANGLE</span>
-            <div className="legend">
-              <span className="legend-dot" style={{background:'var(--sigma-color)'}} />
-              <span className="legend-text">σ<sub>x′</sub>(θ)</span>
-              <span className="legend-dot" style={{background:'var(--tau-color)'}} />
-              <span className="legend-text">τ<sub>x′y′</sub>(θ)</span>
-              {principals && (
-                <>
-                  <span className="legend-dot" style={{background:'var(--accent)'}} />
-                  <span className="legend-text">Principal</span>
-                </>
-              )}
+            <BodyOrientation
+              sigmaX={sigmaX.value}
+              sigmaY={sigmaY.value}
+              tauXY={tauXY.value}
+              theta={theta}
+              onThetaChange={setTheta}
+            />
+            <div className="graph-col">
+              <div className="panel-topbar">
+                <span className="panel-label">STRESS  vs  ANGLE</span>
+                <div className="legend">
+                  <span className="legend-dot" style={{background:'var(--sigma-color)'}} />
+                  <span className="legend-text">σ<sub>x′</sub>(θ)</span>
+                  <span className="legend-dot" style={{background:'var(--tau-color)'}} />
+                  <span className="legend-text">τ<sub>x′y′</sub>(θ)</span>
+                  {principals && (
+                    <>
+                      <span className="legend-dot" style={{background:'var(--accent)'}} />
+                      <span className="legend-text">Principal</span>
+                    </>
+                  )}
+                </div>
+              </div>
+              <StressGraph
+                sigmaX={sigmaX.value}
+                sigmaY={sigmaY.value}
+                tauXY={tauXY.value}
+                thetaMin={thetaMin}
+                thetaMax={thetaMax}
+              />
             </div>
           </div>
-          <StressGraph
-            sigmaX={sigmaX.value}
-            sigmaY={sigmaY.value}
-            tauXY={tauXY.value}
-            thetaMin={thetaMin}
-            thetaMax={thetaMax}
-          />
+        </div>
+
+        {/* ── MOHR'S CIRCLE PANEL (tab: mohr) ── */}
+        <div className={`graph-panel mohr-panel${activeTab !== 'mohr' ? ' tab-hidden' : ''}`}>
+          <div className="panel-topbar">
+            <span className="panel-label">MOHR'S CIRCLE</span>
+            <div className="legend">
+              <span className="legend-dot" style={{background:'var(--sigma-color)'}} />
+              <span className="legend-text">σ<sub>x′</sub>, τ<sub>x′y′</sub></span>
+              <span className="legend-dot" style={{background:'#64ffda'}} />
+              <span className="legend-text">σ₁ (P₁)</span>
+              <span className="legend-dot" style={{background:'#ff6b6b'}} />
+              <span className="legend-text">σ₂ (P₂)</span>
+              <span className="legend-dot" style={{background:'#ffd166'}} />
+              <span className="legend-text">τ<sub>max</sub></span>
+            </div>
           </div>
+          <div className="mohr-panel-inner">
+            <MohrsCircle
+              sigmaX={sigmaX.value}
+              sigmaY={sigmaY.value}
+              tauXY={tauXY.value}
+              theta={theta}
+            />
           </div>
         </div>
 
         {/* ── SIDEBAR ── */}
         <aside className="sidebar">
+          {/* Presets */}
+          <div className="sidebar-section">
+            <div className="section-heading">PRESETS</div>
+            <div className="preset-grid">
+              {PRESETS.map(p => (
+                <button key={p.name} className="preset-btn" onClick={() => applyPreset(p)}>
+                  {p.name}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="sidebar-section">
             <div className="section-heading">PARAMETERS</div>
             <ParameterSlider
@@ -139,14 +209,33 @@ export default function App() {
           </div>
 
           <div className="sidebar-section">
-            <div className="section-heading">ANGLE RANGE</div>
-            <ThetaRangeControl
-              thetaMin={thetaMin}
-              thetaMax={thetaMax}
-              onChangeThetaMin={setThetaMin}
-              onChangeThetaMax={setThetaMax}
-            />
+            <div className="section-heading">ROTATION ANGLE</div>
+            <div className="theta-sidebar">
+              <input
+                type="range"
+                className="theta-range-slider"
+                min={-90} max={90} step={0.5}
+                value={theta}
+                onChange={e => setTheta(Number(e.target.value))}
+              />
+              <div className="theta-row-labels">
+                <span className="theta-side-label">θ = {theta.toFixed(1)}°</span>
+                <span className="theta-side-label">2θ = {(2 * theta).toFixed(1)}°</span>
+              </div>
+            </div>
           </div>
+
+          {activeTab === 'stress' && (
+            <div className="sidebar-section">
+              <div className="section-heading">ANGLE RANGE</div>
+              <ThetaRangeControl
+                thetaMin={thetaMin}
+                thetaMax={thetaMax}
+                onChangeThetaMin={setThetaMin}
+                onChangeThetaMax={setThetaMax}
+              />
+            </div>
+          )}
 
           <div className="sidebar-section">
             <div className="section-heading">DERIVED VALUES</div>
@@ -164,17 +253,17 @@ export default function App() {
                 <span className="derived-val derived-val--tau">{tauMax.toFixed(2)} <span className="derived-unit">MPa</span></span>
               </div>
               <div className="derived-cell">
-                <span className="derived-label">σₐᵥ𝓰  (hydrostatic)</span>
-                <span className="derived-val ">{avg.toFixed(2)} <span className="derived-unit">MPa</span></span>
+                <span className="derived-label">σₐᵥᵍ  (hydrostatic)</span>
+                <span className="derived-val">{avg.toFixed(2)} <span className="derived-unit">MPa</span></span>
               </div>
               {principals && (
                 <>
                   <div className="derived-cell">
-                    <span className="derived-label">θ₁  (principal angle)</span>
+                    <span className="derived-label">θ_p1  (principal)</span>
                     <span className="derived-val derived-val--accent">{principals[0].toFixed(2)}°</span>
                   </div>
                   <div className="derived-cell">
-                    <span className="derived-label">θ₂  (principal angle)</span>
+                    <span className="derived-label">θ_p2  (principal)</span>
                     <span className="derived-val derived-val--accent">{principals[1].toFixed(2)}°</span>
                   </div>
                 </>

@@ -1,21 +1,34 @@
-/* ===== INDUSTRIAL STRESS VISUALIZER ===== */
+/* ===== INDUSTRIAL STRESS VISUALIZER — MARIO WORLD EDITION ===== */
 
 :root {
-  --bg-primary:    #0e0f11;
-  --bg-secondary:  #15171a;
-  --bg-panel:      #1a1c20;
-  --bg-card:       #1f2227;
-  --border:        #2a2d33;
-  --border-accent: #3a3f4a;
-  --accent:        #c8a84b;
-  --accent-dim:    #8a6f2e;
-  --sigma-color:   #5b9bd5;
-  --tau-color:     #d45b5b;
-  --grid-line:     rgba(255,255,255,0.04);
-  --grid-line-mid: rgba(255,255,255,0.08);
-  --text-primary:  #d4d6db;
-  --text-secondary:#7a7f8a;
-  --text-dim:      #4a4f5a;
+  /* backgrounds — bright Mario-world skies */
+  --bg-primary:    #e8f4fd;   /* sky blue */
+  --bg-secondary:  #d0eaf8;   /* slightly deeper sky */
+  --bg-panel:      #c5e3f5;   /* panel sky */
+  --bg-card:       #f0f9ff;   /* near-white card */
+  --border:        #7ec8e3;   /* bright horizon blue */
+  --border-accent: #2196f3;   /* vivid blue border */
+
+  /* rainbow accent palette — vivid on light bg */
+  --accent:        #e65c00;   /* mario orange-red */
+  --accent-dim:    #b34700;
+  --sigma-color:   #1565c0;   /* deep blue – σx' rotating point */
+  --tau-color:     #c62828;   /* red – τ / conjugate */
+  --color-s1:      #1b5e20;   /* forest green – σ1 / P1 */
+  --color-s2:      #e65100;   /* deep orange – σ2 / P2 */
+  --color-tmax:    #6a1b9a;   /* purple – τmax */
+  --color-savg:    #e65c00;   /* orange – σavg */
+  --color-body:    #1565c0;
+
+  /* grid */
+  --grid-line:     rgba(0,0,0,0.06);
+  --grid-line-mid: rgba(0,0,0,0.12);
+
+  /* text — dark on light */
+  --text-primary:  #0d1b2a;
+  --text-secondary:#1e3a5f;
+  --text-dim:      #5b7fa6;
+
   --font-mono:     'JetBrains Mono', 'Fira Mono', 'Courier New', monospace;
   --font-sans:     'Inter', 'Segoe UI', system-ui, sans-serif;
 }

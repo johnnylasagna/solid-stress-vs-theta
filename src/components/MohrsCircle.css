@@ -1,0 +1,203 @@
+.mohr-wrap {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── Toolbar (zoom + visibility) ── */
+.mohr-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  padding: 8px 14px;
+  gap: 8px;
+}
+
+.mohr-toolbar-sep {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+/* ── Zoom bar ── */
+.mohr-zoom-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* ── Visibility toggle bar ── */
+.mohr-vis-bar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.mohr-vis-btn {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  border-radius: 20px;
+  border: 1.5px solid #bcc8d8;
+  background: white;
+  color: #7090b0;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.mohr-vis-btn:hover {
+  border-color: #7090b0;
+  color: #3a5070;
+}
+.mohr-vis-btn--on {
+  font-weight: 700;
+}
+
+.mohr-vis-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.mohr-zoom-btn {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  border: 2px solid #1565c0;
+  background: white;
+  color: #1565c0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, color 0.12s;
+}
+.mohr-zoom-btn:hover { background: #1565c0; color: white; }
+
+.mohr-zoom-reset {
+  font-size: 20px;
+  border-color: #e65c00;
+  color: #e65c00;
+}
+.mohr-zoom-reset:hover { background: #e65c00; color: white; }
+
+.mohr-zoom-label {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: #1565c0;
+  min-width: 56px;
+  text-align: center;
+}
+
+.mohr-zoom-hint {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-left: 8px;
+}
+
+.mohr-svg {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: block;
+}
+
+/* ── Readout panel under the SVG ── */
+.mohr-readout {
+  flex-shrink: 0;
+  background: #daeeff;
+  border-top: 3px solid #2196f3;
+  padding: 14px 20px 16px;
+}
+
+.mohr-readout-title {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: #e65c00;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.mohr-readout-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px 16px;
+}
+
+.mohr-readout-cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  background: white;
+  border: 1.5px solid #7ec8e3;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.mohr-cell-label {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e3a5f;
+  flex-shrink: 0;
+}
+
+.mohr-cell-label sub {
+  font-size: 9px;
+}
+
+.mohr-cell-val {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: #0d1b2a;
+  text-align: right;
+}
+
+.mohr-cell-unit {
+  font-size: 10px;
+  opacity: 0.6;
+  margin-left: 2px;
+}
+
+.mohr-readout-eq {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #1e3a5f;
+  font-weight: 500;
+  margin-top: 8px;
+  text-align: center;
+  border-top: 2px solid #7ec8e3;
+  padding-top: 8px;
+}
+
+.mohr-readout-eq sub {
+  font-size: 8px;
+}

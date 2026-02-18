@@ -18,8 +18,9 @@
 .bo-label {
   font-family: var(--font-mono);
   font-size: 10px;
+  font-weight: 700;
   letter-spacing: 0.14em;
-  color: var(--text-dim);
+  color: var(--text-secondary);
   text-transform: uppercase;
 }
 
@@ -27,7 +28,6 @@
   font-family: var(--font-mono);
   font-size: 9px;
   color: var(--text-dim);
-  opacity: 0.6;
 }
 
 .bo-canvas {
@@ -50,7 +50,7 @@
 .bo-slider-label {
   font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--accent);
+  color: #1565c0;
   width: 14px;
   flex-shrink: 0;
   text-align: center;
@@ -61,7 +61,7 @@
   -webkit-appearance: none;
   appearance: none;
   height: 3px;
-  background: var(--border-accent);
+  background: #7ec8e3;
   border-radius: 2px;
   outline: none;
   cursor: pointer;
@@ -73,9 +73,9 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--accent);
+  background: #1565c0;
   cursor: pointer;
-  border: 2px solid var(--bg-panel);
+  border: 2px solid white;
   transition: transform 0.15s;
 }
 
@@ -87,15 +87,15 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--accent);
+  background: #1565c0;
   cursor: pointer;
-  border: 2px solid var(--bg-panel);
+  border: 2px solid white;
 }
 
 .bo-slider-val {
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--accent);
+  color: #1565c0;
   width: 46px;
   text-align: right;
   flex-shrink: 0;

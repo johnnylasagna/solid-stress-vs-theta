@@ -54,16 +54,16 @@ export default function BodyOrientation({ sigmaX, sigmaY, tauXY, theta, onThetaC
     // ── reference axes (light dashed) ────────────────────────────────────
     ctx.save();
     ctx.setLineDash([5, 6]);
-    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.strokeStyle = 'rgba(0,60,140,0.15)';
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(cx - W * 0.45, cy); ctx.lineTo(cx + W * 0.45, cy); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx, cy - H * 0.45); ctx.lineTo(cx, cy + H * 0.45); ctx.stroke();
     ctx.restore();
 
-    // ── rotated coordinate axes ───────────────────────────────────────────
+    // ── rotated coordinate axes ────────────────────────────────────────────
     const axisLen = side * 0.85;
-    drawAxis(ctx, cx, cy, rad, axisLen, '#c8a84b', "x′");
-    drawAxis(ctx, cx, cy, rad + Math.PI / 2, axisLen, '#c8a84b', "y′");
+    drawAxis(ctx, cx, cy, rad, axisLen, '#1565c0', "x′");
+    drawAxis(ctx, cx, cy, rad + Math.PI / 2, axisLen, '#1565c0', "y′");
 
     // ── square body ───────────────────────────────────────────────────────
     ctx.save();
@@ -71,9 +71,9 @@ export default function BodyOrientation({ sigmaX, sigmaY, tauXY, theta, onThetaC
     ctx.rotate(rad);
 
     // fill
-    ctx.fillStyle = 'rgba(200,168,75,0.06)';
-    ctx.strokeStyle = '#c8a84b';
-    ctx.lineWidth = 1.5;
+    ctx.fillStyle = 'rgba(21,101,192,0.06)';
+    ctx.strokeStyle = '#1565c0';
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.rect(-side / 2, -side / 2, side, side);
     ctx.fill();
@@ -88,8 +88,8 @@ export default function BodyOrientation({ sigmaX, sigmaY, tauXY, theta, onThetaC
     );
     const arrowScale = (side * 0.55) / maxStress;
 
-    const SIGMA_COLOR = '#5b9bd5';
-    const TAU_COLOR   = '#d45b5b';
+    const SIGMA_COLOR = '#1565c0';
+    const TAU_COLOR   = '#c62828';
     const MID = side / 2;
 
     // RIGHT face: σ_x′ (normal, horizontal in rotated frame) + τ (shear, vertical)
@@ -112,8 +112,8 @@ export default function BodyOrientation({ sigmaX, sigmaY, tauXY, theta, onThetaC
 
     // ── theta label ───────────────────────────────────────────────────────
     ctx.save();
-    ctx.font = `bold 12px 'JetBrains Mono', monospace`;
-    ctx.fillStyle = '#c8a84b';
+    ctx.font = `bold 13px 'JetBrains Mono', monospace`;
+    ctx.fillStyle = '#ffdd00';
     ctx.textAlign = 'center';
     ctx.fillText(`θ = ${displayThetaRef.current.toFixed(1)}°`, cx, H - 14);
     ctx.restore();
@@ -121,12 +121,12 @@ export default function BodyOrientation({ sigmaX, sigmaY, tauXY, theta, onThetaC
     // ── stress value legend (bottom-left) ─────────────────────────────────
     const lx = 14, ly = H - 66;
     ctx.save();
-    ctx.font = `10px 'JetBrains Mono', monospace`;
+    ctx.font = `11px 'JetBrains Mono', monospace`;
 
     const lines = [
-      { color: SIGMA_COLOR, text: `σx′ = ${sigma_x_prime.toFixed(1)} MPa` },
-      { color: '#7ecfa0',   text: `σy′ = ${sigma_y_prime.toFixed(1)} MPa` },
-      { color: TAU_COLOR,   text: `τx′y′ = ${tau_prime.toFixed(1)} MPa`  },
+      { color: '#00cfff', text: `σx′ = ${sigma_x_prime.toFixed(1)} MPa` },
+      { color: '#00ff9f', text: `σy′ = ${sigma_y_prime.toFixed(1)} MPa` },
+      { color: '#ff4d6d', text: `τx′y′ = ${tau_prime.toFixed(1)} MPa`  },
     ];
     lines.forEach(({ color, text }, i) => {
       ctx.fillStyle = color;
