@@ -3,6 +3,7 @@ import './App.css';
 import StressGraph from './components/StressGraph';
 import ParameterSlider from './components/ParameterSlider';
 import ThetaRangeControl from './components/ThetaRangeControl';
+import BodyOrientation from './components/BodyOrientation';
 
 const INITIAL = {
   sigmaX: { value: 80,  min: -200, max: 200, step: 1 },
@@ -27,6 +28,7 @@ export default function App() {
   const [params, setParams] = useState(INITIAL);
   const [thetaMin, setThetaMin] = useState(0);
   const [thetaMax, setThetaMax] = useState(180);
+  const [theta, setTheta] = useState(0);
 
   const update = useCallback((key, patch) => {
     setParams(prev => ({ ...prev, [key]: { ...prev[key], ...patch } }));
@@ -62,6 +64,15 @@ export default function App() {
       <div className="app-body">
         {/* ── GRAPH ── */}
         <div className="graph-panel">
+          <div className="graph-row">
+          <BodyOrientation
+            sigmaX={sigmaX.value}
+            sigmaY={sigmaY.value}
+            tauXY={tauXY.value}
+            theta={theta}
+            onThetaChange={setTheta}
+          />
+          <div className="graph-col">
           <div className="panel-topbar">
             <span className="panel-label">STRESS  vs  ANGLE</span>
             <div className="legend">
@@ -84,6 +95,8 @@ export default function App() {
             thetaMin={thetaMin}
             thetaMax={thetaMax}
           />
+          </div>
+          </div>
         </div>
 
         {/* ── SIDEBAR ── */}
