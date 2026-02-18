@@ -1,0 +1,92 @@
+.graph-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.graph-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Grid */
+.grid-line {
+  stroke: var(--grid-line);
+  stroke-width: 1;
+}
+.grid-mid {
+  stroke: var(--grid-line-mid);
+}
+
+/* Zero axis */
+.zero-axis {
+  stroke: rgba(255,255,255,0.18);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+}
+
+/* Plot border */
+.plot-border {
+  fill: none;
+  stroke: var(--border-accent);
+  stroke-width: 1;
+}
+
+/* Curves */
+.curve {
+  fill: none;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sigma-curve {
+  stroke: var(--sigma-color);
+  filter: drop-shadow(0 0 6px rgba(91, 155, 213, 0.45));
+}
+
+.tau-curve {
+  stroke: var(--tau-color);
+  filter: drop-shadow(0 0 6px rgba(212, 91, 91, 0.45));
+}
+
+/* Principal stress markers */
+.principal-marker {
+  fill: var(--accent);
+  stroke: var(--bg-primary);
+  stroke-width: 1.5;
+}
+
+.principal-line {
+  stroke: var(--accent);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0.5;
+}
+
+/* Labels */
+.axis-label {
+  fill: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-anchor: middle;
+}
+
+.axis-label-y {
+  text-anchor: end;
+}
+
+.axis-title {
+  fill: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-anchor: middle;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.axis-title-y {
+  font-size: 10px;
+}

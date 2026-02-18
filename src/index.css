@@ -1,0 +1,31 @@
+/* ===== INDUSTRIAL STRESS VISUALIZER ===== */
+
+:root {
+  --bg-primary:    #0e0f11;
+  --bg-secondary:  #15171a;
+  --bg-panel:      #1a1c20;
+  --bg-card:       #1f2227;
+  --border:        #2a2d33;
+  --border-accent: #3a3f4a;
+  --accent:        #c8a84b;
+  --accent-dim:    #8a6f2e;
+  --sigma-color:   #5b9bd5;
+  --tau-color:     #d45b5b;
+  --grid-line:     rgba(255,255,255,0.04);
+  --grid-line-mid: rgba(255,255,255,0.08);
+  --text-primary:  #d4d6db;
+  --text-secondary:#7a7f8a;
+  --text-dim:      #4a4f5a;
+  --font-mono:     'JetBrains Mono', 'Fira Mono', 'Courier New', monospace;
+  --font-sans:     'Inter', 'Segoe UI', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  height: 100%;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}

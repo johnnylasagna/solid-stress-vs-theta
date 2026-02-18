@@ -1,0 +1,95 @@
+.theta-control {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent-dim);
+}
+
+.theta-label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.theta-sym {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.theta-desc {
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.theta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.theta-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.theta-field-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+}
+
+.theta-val {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  min-width: 52px;
+  text-align: center;
+}
+
+.theta-val:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.theta-input {
+  width: 64px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+  outline: none;
+  text-align: center;
+}
+
+.theta-sep {
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.theta-hint {
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  margin-left: auto;
+  text-transform: uppercase;
+}

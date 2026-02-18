@@ -1,0 +1,235 @@
+/* ===== APP LAYOUT ===== */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 600px;
+  overflow: hidden;
+}
+
+/* \u2500\u2500 HEADER \u2500\u2500 */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 20px;
+  height: 54px;
+  flex-shrink: 0;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.header-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--bg-secondary);
+  background: var(--accent);
+  padding: 3px 7px;
+  border-radius: 1px;
+}
+
+.header-title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.header-equations {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+
+.eq-chip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.eq-chip sub {
+  font-size: 8px;
+}
+
+.eq-frac {
+  opacity: 0.7;
+}
+
+/* \u2500\u2500 BODY \u2500\u2500 */
+.app-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* \u2500\u2500 GRAPH PANEL \u2500\u2500 */
+.graph-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary);
+  border-right: 1px solid var(--border);
+}
+
+.panel-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px 10px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.panel-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+.legend-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-right: 8px;
+}
+
+.legend-text sub {
+  font-size: 8px;
+}
+
+/* \u2500\u2500 SIDEBAR \u2500\u2500 */
+.sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-panel);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-accent) transparent;
+}
+
+.sidebar-section {
+  border-bottom: 1px solid var(--border);
+  padding: 14px 0 0;
+}
+
+.section-heading {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--text-dim);
+  padding: 0 16px 10px;
+  text-transform: uppercase;
+}
+
+/* Derived values */
+.derived-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-bottom: 8px;
+}
+
+.derived-cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 16px;
+  border-top: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+.derived-cell:hover {
+  background: var(--bg-card);
+}
+
+.derived-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.derived-val {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+}
+
+.derived-val--sigma  { color: var(--sigma-color); }
+.derived-val--sigma2 { color: #7ecfa0; }
+.derived-val--tau    { color: var(--tau-color); }
+.derived-val--accent { color: var(--accent); }
+
+.derived-unit {
+  font-size: 9px;
+  opacity: 0.5;
+  margin-left: 2px;
+}
+
+/* \u2500\u2500 RESPONSIVE \u2500\u2500 */
+@media (max-width: 700px) {
+  .app-body {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    flex-shrink: 0;
+    height: auto;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+  .graph-panel {
+    height: 50vh;
+    min-height: 260px;
+  }
+  .app-header {
+    height: auto;
+    padding: 10px 14px;
+    flex-wrap: wrap;
+  }
+  .header-equations {
+    display: none;
+  }
+}
+
