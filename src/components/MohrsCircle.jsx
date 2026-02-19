@@ -380,6 +380,12 @@ export default function MohrsCircle({ sigmaX, sigmaY, tauXY, theta }) {
           </>
         )}
 
+        {/* ── solid radius line from C to Point A ── */}
+        {circleR > 0 && (
+          <line x1={circleCX} y1={circleCY} x2={aX} y2={aY}
+            stroke="#37474f" strokeWidth="2.5" opacity="0.85" />
+        )}
+
         {/* ── radius lines to P1 and P2 ── */}
         {vis.principal && circleR > 0 && (
           <>
