@@ -12,6 +12,7 @@ export default function MohrsCircle({ sigmaX, sigmaY, tauXY, theta }) {
   // ── zoom / pan state ──
   const [zoom, setZoom] = useState(1.6);
   const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
   const isPanning = useRef(false);
   const panStart  = useRef({ mx: 0, my: 0, px: 0, py: 0 });
 
@@ -31,6 +32,7 @@ export default function MohrsCircle({ sigmaX, sigmaY, tauXY, theta }) {
   // drag to pan
   const handleMouseDown = useCallback((e) => {
     isPanning.current = true;
+    setIsDragging(true);
     panStart.current = { mx: e.clientX, my: e.clientY, px: pan.x, py: pan.y };
     e.preventDefault();
   }, [pan]);
@@ -41,7 +43,10 @@ export default function MohrsCircle({ sigmaX, sigmaY, tauXY, theta }) {
       y: panStart.current.py + (e.clientY - panStart.current.my),
     });
   }, []);
-  const handleMouseUp = useCallback(() => { isPanning.current = false; }, []);
+  const handleMouseUp = useCallback(() => {
+    isPanning.current = false;
+    setIsDragging(false);
+  }, []);
   const handleDblClick = useCallback(() => { setZoom(1); setPan({ x: 0, y: 0 }); }, []);
 
   // ── visibility toggles ──
@@ -80,15 +85,10 @@ export default function MohrsCircle({ sigmaX, sigmaY, tauXY, theta }) {
     // max shear angle (45° from principal)
     const thetaS1 = thetaP1 - 45;
 
-    // stresses at principal angle (should be s1, 0)
-    const rad_p = toRad(2 * thetaP1);
-    const sx_at_p1 = avg + diff * Math.cos(rad_p) + tauXY * Math.sin(rad_p);
-    const tau_at_p1 = -diff * Math.sin(rad_p) + tauXY * Math.cos(rad_p);
-
-    return { avg, diff, R, sx_prime, txy_prime, s1, s2, thetaP1, thetaP2, thetaS1, sx_at_p1, tau_at_p1 };
+    return { avg, diff, R, sx_prime, txy_prime, s1, s2, thetaP1, thetaP2, thetaS1 };
   }, [sigmaX, sigmaY, tauXY, theta]);
 
-  const { avg, R, sx_prime, txy_prime, s1, s2, thetaP1, thetaP2, thetaS1 } = derived;
+  const { avg, diff, R, sx_prime, txy_prime, s1, s2, thetaP1, thetaP2, thetaS1 } = derived;
 
   // ── SVG coordinate mapping ──
   const W = 900;
@@ -108,24 +108,29 @@ export default function MohrsCircle({ sigmaX, sigmaY, tauXY, theta }) {
   const circleCY = toSvgY(0);
   const circleR = R * clampedScale;
 
-  // current rotating point (σx', τx'y')
+  // ── Point A: the x-face point (σx, τxy) — fixed on the circle ──
+  // Convention: τxy plots on the NEGATIVE y-axis (downward), so Point A is at (diff, -tauXY)
   const angle2 = toRad(2 * theta);
-  const pointX = circleCX + circleR * Math.cos(angle2);
-  const pointY = circleCY - circleR * Math.sin(angle2); // svg y flips
+  const alpha_A = Math.atan2(-tauXY, diff || 0); // angle of Point A (τxy plots down)
+  const aX = circleCX + circleR * Math.cos(alpha_A);
+  const aY = circleCY - circleR * Math.sin(alpha_A); // SVG y-flip
 
-  // conjugate point (angle + 180°)
-  const conjX = circleCX - circleR * Math.cos(angle2);
-  const conjY = circleCY + circleR * Math.sin(angle2);
+  // current rotating point (σx', τx'y') — starts at A, rotates by −2θ
+  const liveAngle = alpha_A - angle2;
+  const pointX = circleCX + circleR * Math.cos(liveAngle);
+  const pointY = circleCY - circleR * Math.sin(liveAngle);
 
-  // ── Principal angle P1 (σ1 point on circle) ──
-  const angle2_P1 = toRad(2 * thetaP1);
-  const p1X = circleCX + circleR * Math.cos(angle2_P1);
-  const p1Y = circleCY - circleR * Math.sin(angle2_P1);
+  // conjugate point (180° from live point)
+  const conjX = circleCX + circleR * Math.cos(liveAngle + Math.PI);
+  const conjY = circleCY - circleR * Math.sin(liveAngle + Math.PI);
 
-  // ── Principal angle P2 (σ2 point on circle) ──
-  const angle2_P2 = toRad(2 * thetaP2);
-  const p2X = circleCX + circleR * Math.cos(angle2_P2);
-  const p2Y = circleCY - circleR * Math.sin(angle2_P2);
+  // ── P1: σ1 principal stress — always at angle 0 (rightmost, τ = 0) ──
+  const p1X = circleCX + circleR;
+  const p1Y = circleCY;
+
+  // ── P2: σ2 principal stress — always at angle 180° (leftmost, τ = 0) ──
+  const p2X = circleCX - circleR;
+  const p2Y = circleCY;
 
   // ── Max shear point (top/bottom of circle) ──
   const topShearX = circleCX;
@@ -133,21 +138,23 @@ export default function MohrsCircle({ sigmaX, sigmaY, tauXY, theta }) {
   const botShearX = circleCX;
   const botShearY = circleCY + circleR;
 
-  // arc for 2θ
+  // arc for 2θ (from Point A to live point)
   const arcR = Math.max(circleR * 0.22, 14);
-  const arcX1 = circleCX + arcR;
-  const arcY1 = circleCY;
-  const arcEndX = circleCX + arcR * Math.cos(angle2);
-  const arcEndY = circleCY - arcR * Math.sin(angle2);
-  const largeArc = 2 * theta > 180 ? 1 : 0;
-  const sweepArc = 2 * theta >= 0 ? 0 : 1;
+  const arcX1 = circleCX + arcR * Math.cos(alpha_A); // start at Point A direction
+  const arcY1 = circleCY - arcR * Math.sin(alpha_A);
+  const arcEndX = circleCX + arcR * Math.cos(liveAngle);
+  const arcEndY = circleCY - arcR * Math.sin(liveAngle);
+  const largeArc = Math.abs(2 * theta) > 180 ? 1 : 0;
+  const sweepArc = theta >= 0 ? 1 : 0; // positive θ → CW on circle (decreasing angle)
 
-  // arc for 2θP1 (from initial point A to P1)
+  // arc for 2θP1 (from Point A to P1 at angle 0)
   const arcP_R = circleR * 0.35;
-  const arcP_EndX = circleCX + arcP_R * Math.cos(angle2_P1);
-  const arcP_EndY = circleCY - arcP_R * Math.sin(angle2_P1);
+  const arcP_StartX = circleCX + arcP_R * Math.cos(alpha_A);
+  const arcP_StartY = circleCY - arcP_R * Math.sin(alpha_A);
+  const arcP_EndX = circleCX + arcP_R; // P1 is always at angle 0
+  const arcP_EndY = circleCY;
   const arcP_large = Math.abs(2 * thetaP1) > 180 ? 1 : 0;
-  const arcP_sweep = thetaP1 >= 0 ? 0 : 1;
+  const arcP_sweep = thetaP1 >= 0 ? 0 : 1; // A below axis (+τxy): go CCW (incr angle) to P1 at 0°
 
   // axis bounds
   const axisExtent = (R + Math.max(Math.abs(avg), 1) + 15) * clampedScale + 40;
@@ -168,10 +175,6 @@ export default function MohrsCircle({ sigmaX, sigmaY, tauXY, theta }) {
   for (let v = -maxTick; v <= maxTick; v += tickStep) {
     ticks.push(+v.toPrecision(4));
   }
-
-  // σavg label position (top of circle)
-  const sigAvgLabelX = circleCX;
-  const sigAvgLabelY = toSvgY(0) - circleR - 14;
 
   /* ── helper: pill label (bg rect + text) ─────────────────────────────── */
   function pill(x, y, text, color, anchor = 'start') {
@@ -231,7 +234,7 @@ export default function MohrsCircle({ sigmaX, sigmaY, tauXY, theta }) {
         ref={svgRef}
         viewBox={`0 0 ${W} ${H}`}
         className="mohr-svg"
-        style={{ cursor: isPanning.current ? 'grabbing' : 'grab' }}
+        style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
         aria-label="Mohr's Circle"
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -364,12 +367,12 @@ export default function MohrsCircle({ sigmaX, sigmaY, tauXY, theta }) {
         {vis.principal && circleR > 8 && Math.abs(thetaP1) > 0.5 && (
           <>
             <path
-              d={`M ${circleCX + arcP_R},${circleCY} A ${arcP_R},${arcP_R} 0 ${arcP_large},${arcP_sweep} ${arcP_EndX},${arcP_EndY}`}
+              d={`M ${arcP_StartX},${arcP_StartY} A ${arcP_R},${arcP_R} 0 ${arcP_large},${arcP_sweep} ${arcP_EndX},${arcP_EndY}`}
               fill="none" stroke="#1b5e20" strokeWidth="2.5" opacity="0.8"
             />
             {pill(
-              circleCX + (arcP_R + 18) * Math.cos(toRad(thetaP1)),
-              circleCY - (arcP_R + 18) * Math.sin(toRad(thetaP1)),
+              circleCX + (arcP_R + 18) * Math.cos(alpha_A / 2),
+              circleCY - (arcP_R + 18) * Math.sin(alpha_A / 2),
               `2θp=${fmt(2 * thetaP1, 1)}°`,
               '#1b5e20',
               'middle'
@@ -402,8 +405,8 @@ export default function MohrsCircle({ sigmaX, sigmaY, tauXY, theta }) {
               fill="none" stroke="#e65c00" strokeWidth="2.5" opacity="0.9"
             />
             {pill(
-              circleCX + (arcR + 16) * Math.cos(angle2 / 2),
-              circleCY - (arcR + 16) * Math.sin(angle2 / 2),
+              circleCX + (arcR + 16) * Math.cos(alpha_A - toRad(theta)),
+              circleCY - (arcR + 16) * Math.sin(alpha_A - toRad(theta)),
               `2θ=${fmt(2 * theta, 1)}°`,
               '#e65c00',
               'middle'
@@ -507,6 +510,28 @@ export default function MohrsCircle({ sigmaX, sigmaY, tauXY, theta }) {
                   style={{ filter: 'url(#glowStrongM)', transition: 'r 0.1s' }} />
                 {pill(lx, ly - 2, `P2  θp = ${fmt(thetaP2, 1)}°`, '#e65100', anchor)}
                 {pill(lx, ly + 22, `σ2 = ${fmt(s2)}`, '#e65100', anchor)}
+              </>;
+            },
+          },
+          // ── Point A: x-face (\u03c3x, \u03c4xy) \u2014 fixed reference point ──
+          {
+            key: 'pointA',
+            show: true,
+            render: () => {
+              const dx = aX - circleCX, dy = aY - circleCY;
+              const len = Math.sqrt(dx * dx + dy * dy) || 1;
+              const nx = dx / len, ny = dy / len;
+              const offset = 32;
+              const lx = aX + nx * offset, ly = aY + ny * offset;
+              const anchor = Math.abs(nx) < 0.3 ? 'middle' : nx > 0 ? 'start' : 'end';
+              return <>
+                <circle cx={aX} cy={aY} r={hoveredPt === 'pointA' ? 11 : 9}
+                  fill="#37474f" stroke="#fff" strokeWidth="2"
+                  style={{ filter: 'url(#glowStrongM)', transition: 'r 0.1s' }} />
+                <text x={aX} y={aY + 1} fill="white" fontSize="11"
+                  fontFamily="JetBrains Mono, monospace" fontWeight="800" textAnchor="middle"
+                  dominantBaseline="middle">A</text>
+                {pill(lx, ly, `A  (\u03c3x=${fmt(sigmaX)}, \u03c4xy=${fmt(tauXY)})`, '#37474f', anchor)}
               </>;
             },
           },
